@@ -1,4 +1,5 @@
 use bevy::prelude::*;
+use bevy_rapier3d::prelude::*;
 
 use smallvec::SmallVec;
 
@@ -20,7 +21,14 @@ pub struct UiPlugin;
 impl Plugin for UiPlugin {
     fn build(&self, app: &mut App) {
         app
-            .init_resource::<UiState>()
+            .init_resource::<UiState>();
+
+        if !app.is_plugin_added::<RapierPhysicsPlugin>() {
+            app
+                .add_plugins(RapierPhysicsPlugin::<NoUserData>::default());
+        }
+
+        app
             .add_systems(Update, (ui_2d::interaction_system, ui_3d::interaction_system).chain());
     }
 }

@@ -2,7 +2,7 @@
 use bevy::prelude::*;
 use crate::{UiElement, UiState};
 
-pub fn interaction_system(mut ui_state: ResMut<UiState>,
+pub(crate) fn interaction_system(mut ui_state: ResMut<UiState>,
                           ui_2d_element_query: Query<&Interaction, (Changed<Interaction>, With<UiElement>)>) {
 
     let mut found_ui_element_interact: bool = false;
