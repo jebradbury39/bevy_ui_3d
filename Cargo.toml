@@ -2,6 +2,11 @@
 name = "bevy_ui_extended"
 version = "0.1.0"
 edition = "2021"
+license = "MIT"
+repository = "https://github.com/jebradbury39/bevy_ui_extended"
+keywords = ["gamedev", "bevy", "ui", "2d", "3d"]
+categories = ["game-development"]
+description = "An extended UI plugin to enable 3d interactions along with 2d UI elements"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 

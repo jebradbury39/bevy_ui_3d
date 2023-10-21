@@ -9,6 +9,29 @@ pub mod ui_3d;
 #[derive(Component, Default)]
 pub struct UiElement;
 
+/// Add this bundle to Nodes you create (2d elements)
+/// Alternatively, just add the components separately
+#[derive(Bundle, Default)]
+pub struct Ui2dElementBundle {
+    pub ui_element: UiElement,
+    pub interaction: Interaction,
+}
+
+/// Add this bundle to 3d objects you create that you want to support interactions on
+/// Alternatively, just add the components separately
+#[derive(Bundle, Default)]
+pub struct Ui3dElementBundle {
+    pub ui_element: UiElement,
+    pub interaction: ui_3d::Interaction3d,
+    pub collider: Collider,
+}
+
+pub mod prelude {
+    use crate::ui_3d;
+
+    pub use ui_3d::Interaction3d;
+}
+
 #[derive(Default, Resource)]
 pub (crate) struct UiState {
     /// Contains entities whose Interaction should be set to None
@@ -16,12 +39,16 @@ pub (crate) struct UiState {
     pub over_ui_2d_element: bool,
 }
 
-pub struct UiPlugin;
+#[derive(Default)]
+pub struct UiExtPlugin {
+    ui_3d_config: ui_3d::PluginConfig,
+}
 
-impl Plugin for UiPlugin {
+impl Plugin for UiExtPlugin {
     fn build(&self, app: &mut App) {
         app
-            .init_resource::<UiState>();
+            .init_resource::<UiState>()
+            .insert_resource(self.ui_3d_config.clone());
 
         if !app.is_plugin_added::<RapierPhysicsPlugin>() {
             app
