@@ -27,7 +27,7 @@ pub(crate) struct UiState {
 
 #[derive(Default)]
 pub struct Ui3dPlugin {
-    config: PluginConfig,
+    pub config: PluginConfig,
 }
 
 impl Plugin for Ui3dPlugin {
