@@ -8,9 +8,15 @@ use crate::{Ui3dElement, UiState};
 
 #[derive(Resource, Clone)]
 pub struct PluginConfig {
+    /// If true, then check for and set the `Hovered` enum of `Interaction3d`
     pub hover_enabled: bool,
+    /// `hover_enabled` must be true if this is true. If this field is true, then include the hit point
+    /// of the ray in `Interaction3d::Hovered`. Otherwise, just use `Vec3::default()`.
     pub hover_point_enabled: bool,
+    /// If true, then check for and set the `Pressed` enum of `Interaction3d`
     pub press_enabled: bool,
+    /// `press_enabled` must be true if this is true. If this field is true, then include the hit point
+    /// of the ray in `Interaction3d::Pressed`. Otherwise, just use `Vec3::default()`.
     pub press_point_enabled: bool,
 }
 

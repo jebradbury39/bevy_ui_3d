@@ -5,7 +5,7 @@ use smallvec::SmallVec;
 
 mod ui_3d;
 
-pub use ui_3d::Interaction3d;
+pub use ui_3d::{Interaction3d, PluginConfig};
 
 #[derive(Component, Default)]
 pub struct Ui3dElement;
@@ -27,7 +27,7 @@ pub(crate) struct UiState {
 
 #[derive(Default)]
 pub struct Ui3dPlugin {
-    config: ui_3d::PluginConfig,
+    config: PluginConfig,
 }
 
 impl Plugin for Ui3dPlugin {
