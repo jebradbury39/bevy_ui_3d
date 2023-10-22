@@ -1,7 +1,7 @@
 
 use bevy::prelude::*;
 use bevy_rapier3d::prelude::*;
-use bevy_ui_extended::{UiExtPlugin, Ui2dElementBundle, Ui3dElementBundle, ui_3d::Interaction3d};
+use bevy_ui_3d::{Ui3dPlugin, Ui3dElementBundle, Interaction3d};
 
 fn main() {
     App::new()
@@ -12,7 +12,7 @@ fn main() {
             }),
             ..default()
         }))
-        .add_plugins(UiExtPlugin::default())
+        .add_plugins(Ui3dPlugin::default())
         .add_systems(Startup, setup)
         .add_systems(Update, ui_system)
         .run();

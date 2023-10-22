@@ -3,52 +3,39 @@ use bevy_rapier3d::prelude::*;
 
 use smallvec::SmallVec;
 
-pub mod ui_2d;
-pub mod ui_3d;
+mod ui_3d;
+
+pub use ui_3d::Interaction3d;
 
 #[derive(Component, Default)]
-pub struct UiElement;
-
-/// Add this bundle to Nodes you create (2d elements)
-/// Alternatively, just add the components separately
-#[derive(Bundle, Default)]
-pub struct Ui2dElementBundle {
-    pub ui_element: UiElement,
-    pub interaction: Interaction,
-}
+pub struct Ui3dElement;
 
 /// Add this bundle to 3d objects you create that you want to support interactions on
 /// Alternatively, just add the components separately
 #[derive(Bundle, Default)]
 pub struct Ui3dElementBundle {
-    pub ui_element: UiElement,
-    pub interaction: ui_3d::Interaction3d,
+    pub ui_element: Ui3dElement,
+    pub interaction: Interaction3d,
     pub collider: Collider,
 }
 
-pub mod prelude {
-    use crate::ui_3d;
-
-    pub use ui_3d::Interaction3d;
-}
 
 #[derive(Default, Resource)]
 pub (crate) struct UiState {
     /// Contains entities whose Interaction should be set to None
     ui_3d_entities_to_reset: SmallVec<[Entity; 1]>,
-    pub over_ui_2d_element: bool,
 }
 
 #[derive(Default)]
-pub struct UiExtPlugin {
-    ui_3d_config: ui_3d::PluginConfig,
+pub struct Ui3dPlugin {
+    config: ui_3d::PluginConfig,
 }
 
-impl Plugin for UiExtPlugin {
+impl Plugin for Ui3dPlugin {
     fn build(&self, app: &mut App) {
         app
             .init_resource::<UiState>()
-            .insert_resource(self.ui_3d_config.clone());
+            .insert_resource(self.config.clone());
 
         if !app.is_plugin_added::<RapierPhysicsPlugin>() {
             app
@@ -56,6 +43,20 @@ impl Plugin for UiExtPlugin {
         }
 
         app
-            .add_systems(Update, (ui_2d::interaction_system, ui_3d::interaction_system).chain());
+            .add_systems(PreUpdate, (absorb_bevy_ui_inputs)
+                .after(bevy::ui::ui_focus_system));
+
+        app
+            .add_systems(Update, ui_3d::interaction_system);
+    }
+}
+
+fn absorb_bevy_ui_inputs(mut mouse: ResMut<Input<MouseButton>>, interaction_query: Query<&Interaction, (With<Node>, Changed<Interaction>)>) {
+    let event_absorbed_by_ui = interaction_query
+        .iter()
+        .any(|i| matches!(i, Interaction::Pressed | Interaction::Hovered));
+
+    if event_absorbed_by_ui {
+        mouse.reset_all();
     }
 }

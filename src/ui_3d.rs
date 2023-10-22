@@ -4,7 +4,7 @@ use bevy::window::PrimaryWindow;
 
 use bevy_rapier3d::prelude::*;
 
-use crate::{UiElement, UiState};
+use crate::{Ui3dElement, UiState};
 
 #[derive(Resource, Clone)]
 pub struct PluginConfig {
@@ -37,7 +37,7 @@ pub enum Interaction3d {
 #[world_query(mutable)]
 pub struct NodeQuery {
     entity: Entity,
-    ui_element: &'static UiElement,
+    ui_element: &'static Ui3dElement,
     interaction: &'static mut Interaction3d,
     collider: &'static Collider,
     computed_visibility: Option<&'static ComputedVisibility>,
@@ -88,7 +88,7 @@ pub(crate) fn interaction_system(mut ui_state: ResMut<UiState>,
         }
 
         if plugin_config.hover_enabled {
-            if mouse_clicked || ui_state.over_ui_2d_element {
+            if mouse_clicked {
                 // not hovering any 3d interactions since ui event consumed already
                 if matches!(*node.interaction, Interaction3d::Hovered(_)) {
                     *node.interaction = Interaction3d::None;
@@ -97,10 +97,6 @@ pub(crate) fn interaction_system(mut ui_state: ResMut<UiState>,
                 hovered_nodes.push(node.entity);
             }
         }
-    }
-
-    if ui_state.over_ui_2d_element {
-        return;
     }
 
     for (camera, camera_transform) in cameras.iter() {
