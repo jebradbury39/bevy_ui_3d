@@ -43,15 +43,16 @@ pub struct NodeQuery {
     computed_visibility: Option<&'static ComputedVisibility>,
 }
 
-pub(crate) fn interaction_system(mut ui_state: ResMut<UiState>,
-                                 plugin_config: Res<PluginConfig>,
-                                 mouse_button_input: Res<Input<MouseButton>>,
-                                 touches_input: Res<Touches>,
-                                 window_query: Query<&Window, With<PrimaryWindow>>,
-                                 rapier_context: Res<RapierContext>,
-                                 cameras: Query<(&Camera, &GlobalTransform)>,
-                                 mut node_query: Query<NodeQuery>) {
-
+pub(crate) fn interaction_system(
+    mut ui_state: ResMut<UiState>,
+    plugin_config: Res<PluginConfig>,
+    mouse_button_input: Res<Input<MouseButton>>,
+    touches_input: Res<Touches>,
+    window_query: Query<&Window, With<PrimaryWindow>>,
+    rapier_context: Res<RapierContext>,
+    cameras: Query<(&Camera, &GlobalTransform)>,
+    mut node_query: Query<NodeQuery>,
+) {
     let primary_window = if let Some(primary_window) = window_query.iter().next() {
         primary_window
     } else {
@@ -101,11 +102,12 @@ pub(crate) fn interaction_system(mut ui_state: ResMut<UiState>,
 
     for (camera, camera_transform) in cameras.iter() {
         // compute ray from the mouse position
-        let ray = if let Some(ray) = ray_from_mouse_position(primary_window, camera, camera_transform) {
-            ray
-        } else {
-            continue;
-        };
+        let ray =
+            if let Some(ray) = ray_from_mouse_position(primary_window, camera, camera_transform) {
+                ray
+            } else {
+                continue;
+            };
 
         let query_filter_fn = |entity| {
             if let Ok(node) = node_query.get(entity) {
@@ -148,15 +150,20 @@ pub(crate) fn interaction_system(mut ui_state: ResMut<UiState>,
             let mut node = node_query.get_mut(entity).unwrap();
             if mouse_clicked {
                 if plugin_config.press_enabled {
-                    node.interaction.set_if_neq(Interaction3d::Pressed(hit_point));
+                    node.interaction
+                        .set_if_neq(Interaction3d::Pressed(hit_point));
                     if mouse_released {
                         ui_state.ui_3d_entities_to_reset.push(node.entity);
                     }
                 }
             } else {
                 if plugin_config.hover_enabled {
-                    if matches!(*node.interaction, Interaction3d::None | Interaction3d::Hovered(_)) {
-                        node.interaction.set_if_neq(Interaction3d::Hovered(hit_point));
+                    if matches!(
+                        *node.interaction,
+                        Interaction3d::None | Interaction3d::Hovered(_)
+                    ) {
+                        node.interaction
+                            .set_if_neq(Interaction3d::Hovered(hit_point));
 
                         let mut hovered_node_idx: Option<usize> = None;
                         for (idx, hovered_node) in hovered_nodes.iter().enumerate() {

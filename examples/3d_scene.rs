@@ -1,7 +1,6 @@
-
 use bevy::prelude::*;
 use bevy_rapier3d::prelude::*;
-use bevy_ui_3d::{Ui3dPlugin, Ui3dElementBundle, Interaction3d};
+use bevy_ui_3d::{Interaction3d, Ui3dElementBundle, Ui3dPlugin};
 
 fn main() {
     App::new()
@@ -35,16 +34,18 @@ fn setup(
     });
 
     // cube that is clickable
-    commands.spawn((PbrBundle {
-                        mesh: meshes.add(Mesh::from(shape::Cube { size: 1.0 })),
-                        material: materials.add(Color::rgb(0.8, 0.7, 0.6).into()),
-                        transform: Transform::from_xyz(0.0, 0.5, 0.0),
-                        ..default()
-                    },
-                    Ui3dElementBundle {
-                        collider: Collider::cuboid(0.5, 0.5, 0.5),
-                        ..default()
-                    }));
+    commands.spawn((
+        PbrBundle {
+            mesh: meshes.add(Mesh::from(shape::Cube { size: 1.0 })),
+            material: materials.add(Color::rgb(0.8, 0.7, 0.6).into()),
+            transform: Transform::from_xyz(0.0, 0.5, 0.0),
+            ..default()
+        },
+        Ui3dElementBundle {
+            collider: Collider::cuboid(0.5, 0.5, 0.5),
+            ..default()
+        },
+    ));
 
     // cube that is not clickable
     commands.spawn(PbrBundle {
@@ -65,11 +66,10 @@ fn setup(
         ..default()
     });
     // camera
-    commands
-        .spawn(Camera3dBundle {
-            transform: Transform::from_xyz(-2.0, 2.5, 5.0).looking_at(Vec3::ZERO, Vec3::Y),
-            ..default()
-        });
+    commands.spawn(Camera3dBundle {
+        transform: Transform::from_xyz(-2.0, 2.5, 5.0).looking_at(Vec3::ZERO, Vec3::Y),
+        ..default()
+    });
 }
 
 fn ui_system(interactions3d: Query<&Interaction3d, Changed<Interaction3d>>) {
