@@ -8,6 +8,7 @@ You can then write queries on UI interactions for these elements.
 | Bevy Version | bevy_ui_3d version |
 |--------------|--------------------|
 | ^0.11.3      | ^0.1.0             |
+| ^0.12.0      | ^0.2.0             | 
 
 # Examples
 

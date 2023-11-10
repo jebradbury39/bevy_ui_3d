@@ -46,7 +46,7 @@ pub struct NodeQuery {
     ui_element: &'static Ui3dElement,
     interaction: &'static mut Interaction3d,
     collider: &'static Collider,
-    computed_visibility: Option<&'static ComputedVisibility>,
+    computed_visibility: Option<&'static InheritedVisibility>,
 }
 
 pub(crate) fn interaction_system(
@@ -88,7 +88,7 @@ pub(crate) fn interaction_system(
     let mut hovered_nodes: Vec<Entity> = Vec::new();
     for mut node in node_query.iter_mut() {
         if let Some(computed_visibility) = node.computed_visibility {
-            if !computed_visibility.is_visible() {
+            if *computed_visibility == InheritedVisibility::VISIBLE {
                 node.interaction.set_if_neq(Interaction3d::None);
                 continue;
             }
@@ -118,7 +118,7 @@ pub(crate) fn interaction_system(
         let query_filter_fn = |entity| {
             if let Ok(node) = node_query.get(entity) {
                 if let Some(computed_visibility) = node.computed_visibility {
-                    computed_visibility.is_visible()
+                    *computed_visibility == InheritedVisibility::VISIBLE
                 } else {
                     true
                 }
